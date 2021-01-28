@@ -3,6 +3,7 @@ module.exports = {
     APIRequest: require('./APIRequest').default, // eslint-disable-line global-require
     AuthConnector: require('./AuthConnector').default, // eslint-disable-line global-require
     MyStorage: require('./MyStorage').default, // eslint-disable-line global-require
+    WebStorage: require('./WebStorage').default, // eslint-disable-line global-require
     RequestHelper: require('./RequestHelper').default, // eslint-disable-line global-require
     RouteHelper: require('./RouteHelper').default, // eslint-disable-line global-require
     ResourceAssociationHelper: require('./ResourceAssociationHelper').default, // eslint-disable-line global-require
