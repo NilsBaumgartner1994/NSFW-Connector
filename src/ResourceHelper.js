@@ -39,4 +39,4 @@ export class ResourceHelper {
 
 }
 
-export default RequestHelper;
+export default ResourceHelper;
