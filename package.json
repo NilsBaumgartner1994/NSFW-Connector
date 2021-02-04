@@ -1,6 +1,6 @@
 {
   "name": "nsfw-connector",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "NodeJS Sequelize FrameWork Connector",
   "main": "dist/index.js",
   "scripts": {
