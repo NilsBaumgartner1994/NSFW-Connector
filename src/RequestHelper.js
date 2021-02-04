@@ -108,11 +108,8 @@ export class RequestHelper {
             let file = fileList[i];
             formData.append(i+"", file);
         }
-        console.log(formData);
 
         let headers = await RequestHelper.getHeadersForFilesWithAccessToken();
-        console.log(headers);
-        console.log("Start now private request");
         return await RequestHelper.private_sendRequest(requestType,resource_url,formData,headers);
     }
 

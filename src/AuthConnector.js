@@ -39,27 +39,18 @@ export class AuthConnector {
     }
 
     static async authorize(authObject, rememberMe=false){
-        console.log("authorize");
-        console.log(authObject);
+
         let answer = await RequestHelper.sendRequest(RequestHelper.REQUEST_TYPE_POST,"auth/authorize",{auth: authObject, rememberMe: rememberMe});
-        console.log(answer);
         if(RequestHelper.isSuccess(answer)){
-            console.log("Authorize is Success");
             let data = answer.data;
-            console.log(data);
             let currentUser = data.currentUser;
             let accessToken = data.accessToken;
             let refreshToken = data.refreshToken;
             await MyStorage.saveRememberMe(rememberMe);
-            console.log("Remember me saved");
             await MyStorage.saveAuthMethod(authObject["authMethod"]);
-            console.log("Auth Method saved");
             await MyStorage.saveCurrentUser(JSON.stringify(currentUser));
-            console.log("Current user saved");
             await MyStorage.saveAccessToken(accessToken);
-            console.log("Access Token saved");
             await MyStorage.saveRefreshToken(refreshToken);
-            console.log("Refresh Token saved");
         } else {
             await MyStorage.clear();
         }

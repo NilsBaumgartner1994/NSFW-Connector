@@ -6,13 +6,11 @@ import {RequestHelper} from "./RequestHelper";
 export class ResourceAssociationHelper {
 
     static async handlePostAssociationsForResource(resource, tableName, associationTableName,associationResources){
-        console.log("handlePostAssociationsForResource");
         let schemes = await NSFWConnector.getSchemes();
         let scheme = await NSFWConnector.getScheme(tableName);
         let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resource,associationTableName);
 
         let url = route;
-        console.log(url);
         let amountAssociatedResources = associationResources.length;
 
         let errorList = [];

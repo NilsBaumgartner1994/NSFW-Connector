@@ -24,7 +24,6 @@ export class APIRequest {
                 return answer;
             }
         }
-        console.log("What the heck?");
         return null;
     }
 }
