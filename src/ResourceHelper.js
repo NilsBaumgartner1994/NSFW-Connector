@@ -14,7 +14,10 @@ export class ResourceHelper {
             if(!!progessCallback){
                 progessCallback(i, resource, successList, errorList);
             }
-            let payloadResource = payloadResources[i] || {};
+            let payloadResource = {};
+            if(!!payloadResources && !!payloadResources[i]){
+                payloadResource = payloadResources[i];
+            }
             let answer = await ResourceHelper.handleRequestTypeOnResource(resource, tableName, requestType, payloadResource);
             let success = RequestHelper.isSuccess(answer);
             if(success){
