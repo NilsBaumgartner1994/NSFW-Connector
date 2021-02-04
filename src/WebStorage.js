@@ -11,30 +11,36 @@ export class WebStorage{
 
     static KEY_ACCESSTOKEN = "AccessToken";
     static async saveAccessToken(data){
-        return WebStorage.getStorage().setItem(WebStorage.KEY_ACCESSTOKEN, data);
+        let storage = await WebStorage.getStorage();
+        return storage.setItem(WebStorage.KEY_ACCESSTOKEN, data);
     }
 
     static async getAccessToken(){
-        return WebStorage.getStorage().getItem(WebStorage.KEY_ACCESSTOKEN);
+        let storage = await WebStorage.getStorage();
+        return storage.getItem(WebStorage.KEY_ACCESSTOKEN);
     }
 
     static async removeAccessToken(){
-        return WebStorage.getStorage().removeItem(WebStorage.KEY_ACCESSTOKEN);
+        let storage = await WebStorage.getStorage();
+        return storage.removeItem(WebStorage.KEY_ACCESSTOKEN);
     }
 
 
 
     static KEY_REFRESHTOKEN = "RefreshToken";
     static async saveRefreshToken(data){
-        return WebStorage.getStorage().setItem(WebStorage.KEY_REFRESHTOKEN, data);
+        let storage = await WebStorage.getStorage();
+        return storage.setItem(WebStorage.KEY_REFRESHTOKEN, data);
     }
 
     static async getRefreshToken(){
-        return WebStorage.getStorage().getItem(WebStorage.KEY_REFRESHTOKEN);
+        let storage = await WebStorage.getStorage();
+        return storage.getItem(WebStorage.KEY_REFRESHTOKEN);
     }
 
     static async removeRefreshToken(){
-        return WebStorage.getStorage().removeItem(WebStorage.KEY_REFRESHTOKEN);
+        let storage = await WebStorage.getStorage();
+        return storage.removeItem(WebStorage.KEY_REFRESHTOKEN);
     }
 
 
@@ -60,29 +66,35 @@ export class WebStorage{
 
     static KEY_AUTHMETHOD = "AuthMethod";
     static async saveAuthMethod(method){
-        return WebStorage.getStorage().setItem(WebStorage.KEY_AUTHMETHOD, method);
+        let storage = await WebStorage.getStorage();
+        return storage.setItem(WebStorage.KEY_AUTHMETHOD, method);
     }
 
     static async getAuthMethod(){
-        return WebStorage.getStorage().getItem(WebStorage.KEY_AUTHMETHOD);
+        let storage = await WebStorage.getStorage();
+        return storage.getItem(WebStorage.KEY_AUTHMETHOD);
     }
 
     static async removeAuthMethod(){
-        return WebStorage.getStorage().removeItem(WebStorage.KEY_AUTHMETHOD);
+        let storage = await WebStorage.getStorage();
+        return storage.removeItem(WebStorage.KEY_AUTHMETHOD);
     }
 
 
     static KEY_CURRENTUSER = "CurrentUser";
     static async saveCurrentUser(currentUserAsString){
-        return WebStorage.getStorage().setItem(WebStorage.KEY_CURRENTUSER, currentUserAsString);
+        let storage = await WebStorage.getStorage();
+        return storage.setItem(WebStorage.KEY_CURRENTUSER, currentUserAsString);
     }
 
     static async getCurrentUser(){
-        return WebStorage.getStorage().getItem(WebStorage.KEY_CURRENTUSER);
+        let storage = await WebStorage.getStorage();
+        return storage.getItem(WebStorage.KEY_CURRENTUSER);
     }
 
     static async removeCurrentUser(){
-        return WebStorage.getStorage().removeItem(WebStorage.KEY_CURRENTUSER);
+        let storage = await WebStorage.getStorage();
+        return storage.removeItem(WebStorage.KEY_CURRENTUSER);
     }
 
     static async clear(){
