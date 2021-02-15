@@ -55,11 +55,14 @@ export class ResourceAssociationHelper {
         return filterParam;
     }
 
-    static async handleGetAssociationsForResource(resourceClass, associationTableName,filterParams={}){
+    static async handleGetAssociationsForResource(resourceClass, associationName, associationTableName=associationName,filterParams={}){
         if(!filterParams){
             filterParams = {};
         }
-        let route = RouteHelper.getIndexRouteForAssociation(resourceClass,associationTableName);
+        if(!associationTableName){
+            associationTableName = associationName;
+        }
+        let route = RouteHelper.getIndexRouteForAssociation(resourceClass,associationName);
         let filterParam = ResourceAssociationHelper.getURLFilterParamsAddon(filterParams);
 
         let url = route+"?"+filterParam;
