@@ -8,27 +8,38 @@ export class NSFWResource {
     /**
      * Call await resource.load ! After instantiation
      * @param tableName the Tablename of the Resource
-     * @param params can be a resource or just a dict like: {id: primKey}
      */
-    constructor(tableName, params) {
+    constructor(tableName) {
         this._metaInformations = {
             tableName: tableName,
-            params: params,
             synchronized: false,
             initialLoadSuccess: false,
         };
     }
 
+
     /**
-     * Every Resource needs to be loaded
+     * Loads Resource by params from webpage
+     * @param params {Exams_id: primaryKey}
      * @returns {Promise<void>}
-     * @private
      */
-    async load(){
+    async loadByParams(params){
         let schemes = await NSFWConnector.getSchemes();
-        let route = RouteHelper.getInstanceRouteForParams(schemes,this._metaInformations.tableName,this._metaInformations.params);
+        let route = RouteHelper.getInstanceRouteForParams(schemes,this._metaInformations.tableName,params);
         if(!!route){
             this._metaInformations.instanceRoute = route;
+            await this.reload();
+        }
+    }
+
+    /**
+     * Loads Resource by resource dict
+     * @param resource {id: primaryKey}
+     * @returns {Promise<void>}
+     */
+    async loadByResource(resource){
+        this._reloadInstanceRoute(resource);
+        if(!!this._metaInformations.instanceRoute){
             await this.reload();
         }
     }
@@ -58,7 +69,8 @@ export class NSFWResource {
 
     async _reloadInstanceRoute(resource){
         let schemes = await NSFWConnector.getSchemes();
-        this._metaInformations.instanceRoute = RouteHelper.getInstanceRouteForParams(schemes, this._metaInformations.tableName, resource);
+        let modelscheme = await NSFWConnector.getScheme(this._metaInformations.tableName);
+        this._metaInformations.instanceRoute = RouteHelper.getInstanceRouteForResource(schemes, modelscheme, this._metaInformations.tableName, resource);
     }
 
     _setResource(resource){
