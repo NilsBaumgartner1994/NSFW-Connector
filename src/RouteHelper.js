@@ -49,14 +49,14 @@ export class RouteHelper{
 		return getRoute;
 	}
 
-	static getIndexRouteForAssociation(schemes,resourceModelScheme,resourceTablename, resource, associationName){
-		let resourceInstanceRoute = RouteHelper.getInstanceRouteForResource(schemes, resourceModelScheme,resourceTablename,resource);
+	static getIndexRouteForAssociation(resourceClass, associationName){
+		let resourceInstanceRoute = resourceClass.getInstanceRoute()
 		let associationIndexRoute = resourceInstanceRoute+"/associations/"+associationName;
 		return associationIndexRoute;
 	}
 
-	static getInstanceRouteForAssociatedResource(schemes,resourceModelScheme,resourceTablename, resource, associationModelScheme, associationTableName,associationName, associationResource){
-		let associationIndexRoute = RouteHelper.getIndexRouteForAssociation(schemes,resourceModelScheme,resourceTablename, resource, associationName);
+	static getInstanceRouteForAssociatedResource(schemes,resourceClass, associationModelScheme, associationTableName,associationName, associationResource){
+		let associationIndexRoute = RouteHelper.getIndexRouteForAssociation(resourceClass, associationName);
 		let associationInstanceRoute = RouteHelper.getInstanceRouteForResource(schemes,associationModelScheme,associationTableName,associationResource);
 		let primaryKeyParamsRoute = associationInstanceRoute.replace("models/"+associationTableName+"/","");
 		let associationRoute = associationIndexRoute+"/"+primaryKeyParamsRoute;

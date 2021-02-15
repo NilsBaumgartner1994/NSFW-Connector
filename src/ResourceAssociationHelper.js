@@ -2,13 +2,15 @@ import {NSFWConnector} from "./NSFWConnector";
 import {APIRequest} from "./APIRequest";
 import {RouteHelper} from "./RouteHelper";
 import {RequestHelper} from "./RequestHelper";
+import Resource from "./Resource";
 
 export class ResourceAssociationHelper {
 
-    static async handlePostAssociationsForResource(resource, tableName, associationTableName,associationResources){
+    static async handlePostAssociationsForResource(resourceClass, associationTableName,associationResources){
         let schemes = await NSFWConnector.getSchemes();
+        let tableName = resourceClass.getTablename();
         let scheme = await NSFWConnector.getScheme(tableName);
-        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resource,associationTableName);
+        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resourceClass,associationTableName);
 
         let url = route;
         let amountAssociatedResources = associationResources.length;
@@ -56,27 +58,46 @@ export class ResourceAssociationHelper {
         return filterParam;
     }
 
-    static async handleGetAssociationsForResource(resource, tableName, associationTableName,filterParams={}){
+    static async handleGetAssociationsForResource(resourceClass, associationTableName,filterParams={}){
+        if(!filterParams){
+            filterParams = {};
+        }
         let schemes = await NSFWConnector.getSchemes();
+        let tableName = resourceClass.getTablename();
         let scheme = await NSFWConnector.getScheme(tableName);
-        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resource,associationTableName);
+        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resourceClass,associationTableName);
         let filterParam = ResourceAssociationHelper.getURLFilterParamsAddon(filterParams);
 
         let url = route+"?"+filterParam;
         let answer = await APIRequest.sendRequestWithAutoAuthorize(RequestHelper.REQUEST_TYPE_GET,url);
         if(RequestHelper.isSuccess(answer)) {
-            return answer.data;
+            if(answer.data.length >= 0){
+                let listOfResources = [];
+                for(let i=0; i<answer.data.length; i++){
+                    let association = answer.data[i];
+                    let synchronizedResource = association
+                    let associationResourceClass = new Resource(associationTableName, synchronizedResource);
+                    await associationResourceClass._setSynchronizedResource(synchronizedResource);
+                    listOfResources.push(associationResourceClass);
+                }
+                return listOfResources;
+            } else {
+                let synchronizedResource = answer.data
+                let associationResourceClass = new Resource(associationTableName, synchronizedResource);
+                await associationResourceClass._setSynchronizedResource(synchronizedResource);
+                return associationResourceClass;
+            }
         }
         return null;
     }
 
-    static async handleRequestTypeOnMultiplePluralAssociation(resource, tableName, associationTableName, associationName, associationResources, requestType){
+    static async handleRequestTypeOnMultiplePluralAssociation(resourceClass, associationTableName, associationName, associationResources, requestType){
         let amountAssociatedResources = associationResources.length;
         let errorList = [];
         let successList = [];
         for(let i=0; i<amountAssociatedResources; i++){
             let associationResource = associationResources[i];
-            let answer = await ResourceAssociationHelper.handleRequestTypeOnPluralAssociation(resource, tableName, associationTableName, associationName, associationResource, requestType);
+            let answer = await ResourceAssociationHelper.handleRequestTypeOnPluralAssociation(resourceClass, associationTableName, associationName, associationResource, requestType);
             let success = RequestHelper.isSuccess(answer);
             if(success){
                 successList.push(associationResource);
@@ -90,11 +111,10 @@ export class ResourceAssociationHelper {
         }
     }
 
-    static async handleRequestTypeOnPluralAssociation(resource, tableName, associationTableName, associationName, associationResource, requestType){
+    static async handleRequestTypeOnPluralAssociation(resourceClass, associationTableName, associationName, associationResource, requestType){
         let associationModelscheme = await NSFWConnector.getScheme(associationTableName);
         let schemes = await NSFWConnector.getSchemes();
-        let scheme = await NSFWConnector.getScheme(tableName);
-        let route = RouteHelper.getInstanceRouteForAssociatedResource(schemes,scheme,tableName,resource,associationModelscheme,associationTableName,associationName,associationResource);
+        let route = RouteHelper.getInstanceRouteForAssociatedResource(schemes,resourceClass,associationModelscheme,associationTableName,associationName,associationResource);
         let answer = await APIRequest.sendRequestWithAutoAuthorize(requestType,route);
         return answer;
     }
