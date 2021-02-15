@@ -38,7 +38,7 @@ export class NSFWResource {
      * @returns {Promise<void>}
      */
     async loadByResource(resource){
-        this._reloadInstanceRoute(resource);
+        await this._reloadInstanceRoute(resource);
         if(!!this._metaInformations.instanceRoute){
             await this.reload();
         }
