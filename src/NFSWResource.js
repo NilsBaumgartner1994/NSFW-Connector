@@ -3,7 +3,7 @@ import RequestHelper from "./RequestHelper";
 import NSFWConnector from "./NSFWConnector";
 import RouteHelper from "./RouteHelper";
 
-export class Resource {
+export class NFSWResource {
 
     /**
      * Call await resource.load ! After instantiation
@@ -155,4 +155,4 @@ export class Resource {
 
 }
 
-export default Resource
+export default NFSWResource
