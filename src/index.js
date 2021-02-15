@@ -11,5 +11,5 @@ module.exports = {
     SchemeHelper: require('./SchemeHelper').default, // eslint-disable-line global-require
     NSFWConnector: require('./NSFWConnector').default, // eslint-disable-line global-require
     StorageDict: require('./StorageDict').default, // eslint-disable-line global-require
-    NFSWResource: require('./NFSWResource').NFSWResource, // eslint-disable-line global-require
+    NSFWResource: require('./NSFWResource').NSFWResource, // eslint-disable-line global-require
 };

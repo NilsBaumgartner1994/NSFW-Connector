@@ -2,7 +2,7 @@ import {NSFWConnector} from "./NSFWConnector";
 import {APIRequest} from "./APIRequest";
 import {RouteHelper} from "./RouteHelper";
 import {RequestHelper} from "./RequestHelper";
-import NFSWResource from "./NFSWResource";
+import NSFWResource from "./NSFWResource";
 
 export class ResourceAssociationHelper {
 
@@ -70,14 +70,14 @@ export class ResourceAssociationHelper {
                 for(let i=0; i<answer.data.length; i++){
                     let association = answer.data[i];
                     let synchronizedResource = association
-                    let associationResourceClass = new NFSWResource(associationTableName, synchronizedResource);
+                    let associationResourceClass = new NSFWResource(associationTableName, synchronizedResource);
                     await associationResourceClass._setSynchronizedResource(synchronizedResource);
                     listOfResources.push(associationResourceClass);
                 }
                 return listOfResources;
             } else {
                 let synchronizedResource = answer.data
-                let associationResourceClass = new NFSWResource(associationTableName, synchronizedResource);
+                let associationResourceClass = new NSFWResource(associationTableName, synchronizedResource);
                 await associationResourceClass._setSynchronizedResource(synchronizedResource);
                 return associationResourceClass;
             }
