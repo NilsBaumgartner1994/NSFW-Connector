@@ -15,7 +15,7 @@ export class NFSWResource {
             tableName: tableName,
             params: params,
             synchronized: false,
-            initialLoadSuccess: false
+            initialLoadSuccess: false,
         };
     }
 
@@ -123,7 +123,6 @@ export class NFSWResource {
         if(this._metaInformations.initialLoadSuccess){
             this._setResource(this._metaInformations.rawResource);
         }
-
     }
 
     getTablename(){

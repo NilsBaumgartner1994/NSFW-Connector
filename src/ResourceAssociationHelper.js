@@ -7,10 +7,7 @@ import NFSWResource from "./NFSWResource";
 export class ResourceAssociationHelper {
 
     static async handlePostAssociationsForResource(resourceClass, associationTableName,associationResources){
-        let schemes = await NSFWConnector.getSchemes();
-        let tableName = resourceClass.getTablename();
-        let scheme = await NSFWConnector.getScheme(tableName);
-        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resourceClass,associationTableName);
+        let route = RouteHelper.getIndexRouteForAssociation(resourceClass,associationTableName);
 
         let url = route;
         let amountAssociatedResources = associationResources.length;
@@ -62,10 +59,7 @@ export class ResourceAssociationHelper {
         if(!filterParams){
             filterParams = {};
         }
-        let schemes = await NSFWConnector.getSchemes();
-        let tableName = resourceClass.getTablename();
-        let scheme = await NSFWConnector.getScheme(tableName);
-        let route = RouteHelper.getIndexRouteForAssociation(schemes,scheme,tableName,resourceClass,associationTableName);
+        let route = RouteHelper.getIndexRouteForAssociation(resourceClass,associationTableName);
         let filterParam = ResourceAssociationHelper.getURLFilterParamsAddon(filterParams);
 
         let url = route+"?"+filterParam;
