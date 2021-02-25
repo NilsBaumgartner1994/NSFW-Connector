@@ -77,6 +77,7 @@ export class NSFWResource {
         this._metaInformations.rawResource = resource;
         this._mapRawResourceToInstance();
         this._metaInformations.synchronized = true;
+        this._metaInformations.initialLoadSuccess = true;
     }
 
     async save(){
