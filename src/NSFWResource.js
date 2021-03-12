@@ -56,6 +56,9 @@ export class NSFWResource {
                 this._metaInformations.initialLoadSuccess = true;
                 await this._reloadInstanceRoute(answer.data);
                 this._setResource(answer.data);
+            } else {
+                //TODO how to handle no success
+                //case not found, permission denied, ...
             }
         }
     }
