@@ -1,5 +1,8 @@
 import {APIRequest} from "./APIRequest";
 import {RequestHelper} from "./RequestHelper";
+import ResourceAssociationHelper from "./ResourceAssociationHelper";
+
+import NFSWResource from "./NFSWResource";
 
 export class ResourceHelper {
 
@@ -33,6 +36,51 @@ export class ResourceHelper {
     static async handleRequestTypeOnResource(resource, requestType, payloadJSON){
         let route = resource._metaInformations.instanceRoute;
         return await APIRequest.sendRequestWithAutoAuthorize(requestType, route, payloadJSON);
+    }
+
+    static async loadResourcesFromServer(tableName, offset, limit, multiSortMeta, filterParams){
+        let orderParam = "";
+        if(!!multiSortMeta && multiSortMeta.length>0){
+            orderParam = orderParam+"&order=[";
+            for(let i=0; i<multiSortMeta.length; i++){
+                if(i>0){
+                    orderParam+=",";
+                }
+                let field = multiSortMeta[i].field;
+                let ascending = multiSortMeta[i].order === 1;
+                let ASCDESC = ascending ? "ASC" : "DESC";
+                orderParam = orderParam+'["'+field+'","'+ASCDESC+'"]';
+            }
+            orderParam = orderParam+"]";
+        }
+        let limitParam = "";
+        if(!!limit){
+            limitParam = "&limit="+limit;
+        }
+
+        let offsetParam = "";
+        if(!!offset){
+            offsetParam="&offset="+offset;
+        }
+
+        let filterParam = ResourceAssociationHelper.getURLFilterParamsAddon(filterParams);
+
+        let url = "models/"+tableName+"?"+limitParam+offsetParam+orderParam+filterParam;
+        let answer = await APIRequest.sendRequestWithAutoAuthorize(RequestHelper.REQUEST_TYPE_GET,url);
+        if(RequestHelper.isSuccess(answer)){
+            let resourceList = answer.data;
+            let resourceClassList = [];
+            for(let i=0; i<resourceList.length; i++){
+                let resource = resourceList[i];
+                let resourceClass = new NFSWResource(tableName);
+                await resourceClass._setSynchronizedResource(resource);
+                resourceClassList.push(resourceClass);
+            }
+
+            return resourceClassList;
+        } else {
+            return []; // gebe leere Liste aus
+        }
     }
 
 }

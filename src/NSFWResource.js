@@ -2,8 +2,41 @@ import APIRequest from "./APIRequest";
 import RequestHelper from "./RequestHelper";
 import NSFWConnector from "./NSFWConnector";
 import RouteHelper from "./RouteHelper";
+import ResourceHelper from "./ResourceHelper";
+import ResourceAssociationHelper from "./ResourceAssociationHelper";
 
 export class NSFWResource {
+
+    static async getAll(tableName, offset, limit, multiSortMeta, filterParams) {
+        return await ResourceHelper.loadResourcesFromServer(
+            tableName,
+            offset,
+            limit,
+            multiSortMeta,
+            filterParams
+        );
+    }
+
+    static async create(tableName, resourceData) {
+        let route = await RouteHelper.getIndexRouteForResourceAsync(tableName);
+        let answer = await APIRequest.sendRequestWithAutoAuthorize(
+            RequestHelper.REQUEST_TYPE_POST,
+            route,
+            resourceData
+        );
+        if (RequestHelper.isSuccess(answer)) {
+            let resource = new NSFWResource(tableName);
+            resource._setResource(answer.data);
+            return resource;
+        }
+        return null;
+    }
+
+    static async load(tableName, primaryKeys) {
+        let resource = new NSFWResource(tableName);
+        await resource.loadByResource(primaryKeys);
+        return resource;
+    }
 
     /**
      * Call await resource.load ! After instantiation
@@ -34,19 +67,14 @@ export class NSFWResource {
 
     /**
      * Loads Resource by resource dict
-     * @param resource {id: primaryKey}
+     * @param primaryKeys {id: primaryKey}
      * @returns {Promise<void>}
      */
-    async loadByResource(resource){
-        await this._reloadInstanceRoute(resource);
+    async loadByResource(primaryKeys){
+        await this._reloadInstanceRoute(primaryKeys);
         if(!!this._metaInformations.instanceRoute){
             await this.reload();
         }
-    }
-
-    async _setSynchronizedResource(synchronizedResource){
-        this._setResource(synchronizedResource);
-        await this._reloadInstanceRoute(synchronizedResource);
     }
 
     async reload(){
@@ -70,19 +98,6 @@ export class NSFWResource {
         return false;
     }
 
-    async _reloadInstanceRoute(resource){
-        let schemes = await NSFWConnector.getSchemes();
-        let modelscheme = await NSFWConnector.getScheme(this._metaInformations.tableName);
-        this._metaInformations.instanceRoute = RouteHelper.getInstanceRouteForResource(schemes, modelscheme, this._metaInformations.tableName, resource);
-    }
-
-    _setResource(resource){
-        this._metaInformations.rawResource = resource;
-        this._mapRawResourceToInstance();
-        this._metaInformations.synchronized = true;
-        this._metaInformations.initialLoadSuccess = true;
-    }
-
     async save(){
         //updates changes to database
         let resource = this.toJSON();
@@ -101,13 +116,20 @@ export class NSFWResource {
         return answer;
     }
 
-    _mapRawResourceToInstance(){
-        let keys = this.getKeys();
-        let rawResource = this._metaInformations.rawResource;
-        for(let i=0; i<keys.length; i++){
-            let key = keys[i];
-            this[key] = rawResource[key];
-        }
+    async getAssociations(associationName, associationTableName=associationName, filterParams) {
+        return await ResourceAssociationHelper.handleGetAssociationsForResource(
+            this,
+            associationName,
+            associationTableName,
+            filterParams
+        ) || [];
+    }
+
+    // TODO setAssociations, addAssociation, removeAssociation, deleteAssociation
+
+    async getScheme() {
+        let tableName = this.getTablename();
+        return await NSFWConnector.getScheme(tableName);
     }
 
     isSynchronized(){
@@ -115,19 +137,6 @@ export class NSFWResource {
             return false;
         }
         return this._isKeySynchronized();
-    }
-
-    _isKeySynchronized(){
-        let keys = this.getKeys();
-        let rawResource = this._metaInformations.rawResource;
-        let keySynchronized = true;
-        for(let i=0; i<keys.length; i++){
-            let key = keys[i];
-            if(this[key] !== rawResource[key]){
-                keySynchronized = false;
-            }
-        }
-        return keySynchronized;
     }
 
     getKeys(){
@@ -168,6 +177,45 @@ export class NSFWResource {
         return json;
     }
 
+    async _reloadInstanceRoute(resource){
+        let schemes = await NSFWConnector.getSchemes();
+        let modelscheme = await this.getScheme();
+        this._metaInformations.instanceRoute = RouteHelper.getInstanceRouteForResource(schemes, modelscheme, this._metaInformations.tableName, resource);
+    }
+
+    async _setSynchronizedResource(synchronizedResource){
+        this._setResource(synchronizedResource);
+        await this._reloadInstanceRoute(synchronizedResource);
+    }
+
+    _setResource(resource){
+        this._metaInformations.rawResource = resource;
+        this._mapRawResourceToInstance();
+        this._metaInformations.synchronized = true;
+        this._metaInformations.initialLoadSuccess = true;
+    }
+
+    _isKeySynchronized(){
+        let keys = this.getKeys();
+        let rawResource = this._metaInformations.rawResource;
+        let keySynchronized = true;
+        for(let i=0; i<keys.length; i++){
+            let key = keys[i];
+            if(this[key] !== rawResource[key]){
+                keySynchronized = false;
+            }
+        }
+        return keySynchronized;
+    }
+
+    _mapRawResourceToInstance(){
+        let keys = this.getKeys();
+        let rawResource = this._metaInformations.rawResource;
+        for(let i=0; i<keys.length; i++){
+            let key = keys[i];
+            this[key] = rawResource[key];
+        }
+    }
 }
 
 export default NSFWResource
