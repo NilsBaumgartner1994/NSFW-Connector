@@ -2,7 +2,7 @@ import {APIRequest} from "./APIRequest";
 import {RequestHelper} from "./RequestHelper";
 import ResourceAssociationHelper from "./ResourceAssociationHelper";
 
-import NFSWResource from "./NFSWResource";
+import NFSWResource from "./NSFWResource";
 
 export class ResourceHelper {
 
