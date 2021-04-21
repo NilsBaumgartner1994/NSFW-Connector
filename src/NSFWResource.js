@@ -201,7 +201,8 @@ export class NSFWResource {
         let keySynchronized = true;
         for(let i=0; i<keys.length; i++){
             let key = keys[i];
-            if(this[key] !== rawResource[key]){
+            // noinspection EqualityComparisonWithCoercionJS
+            if(this[key] != rawResource[key]){ //since date is once a string and once an object, we need != not !==
                 keySynchronized = false;
             }
         }

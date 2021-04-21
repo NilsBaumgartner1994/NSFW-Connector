@@ -42,6 +42,15 @@ export class NSFWConnector {
         return NSFWConnector.schemes;
     }
 
+    static async getServerVersion(){
+        let answer = await APIRequest.sendRequestWithAutoAuthorize(RequestHelper.REQUEST_TYPE_GET,"version");
+        if(RequestHelper.isSuccess(answer)){
+            let data = answer.data || {};
+            return data.version;
+        }
+        return null;
+    }
+
     static async getScheme(tableName){
         let asyncFn = APIRequest.sendRequestWithAutoAuthorize.bind(null,RequestHelper.REQUEST_TYPE_GET, "schemes/" + tableName);
         return await NSFWConnector.getVariableDownloadIt("tableSchemes",tableName,asyncFn);
