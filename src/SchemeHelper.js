@@ -58,8 +58,16 @@ export class SchemeHelper {
 		return SchemeHelper.getType(scheme,field) === "JSON";
 	}
 
+	static isTypeBLOB(scheme, field){
+		return SchemeHelper.getType(scheme,field) === "BLOB";
+	}
+
 	static isTypeInteger(scheme, field){
 		return SchemeHelper.getType(scheme,field) === "INTEGER";
+	}
+
+	static isTypeBigInteger(scheme, field){
+		return SchemeHelper.getType(scheme,field) === "BIGINT";
 	}
 
 	static isTypeDate(scheme, field){
