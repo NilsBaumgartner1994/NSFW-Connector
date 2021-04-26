@@ -26,6 +26,7 @@ export class NSFWResource {
         );
         if (RequestHelper.isSuccess(answer)) {
             let resource = new NSFWResource(tableName);
+            await resource._reloadInstanceRoute(answer.data);
             resource._setResource(answer.data);
             return resource;
         }
