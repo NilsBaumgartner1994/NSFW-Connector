@@ -126,7 +126,7 @@ export class NSFWResource {
         ) || [];
     }
 
-    async addAssociationResource(associationName, associationResource) {
+    async addAssociation(associationName, associationResource) {
         let associationResources = null;
         if(Array.isArray(associationResource)){
             associationResources = associationResource;
