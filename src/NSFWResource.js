@@ -126,7 +126,33 @@ export class NSFWResource {
         ) || [];
     }
 
-    // TODO setAssociations, addAssociation, removeAssociation, deleteAssociation
+    async addAssociation(associationName, associationResource) {
+        let associationTableName = associationResource.getTablename();
+        // m to n or 1 to n
+        let toMultiple = associationTableName === associationName;
+        if (toMultiple) {
+            let associationResources = [associationResource];
+            let responseJSON = await ResourceAssociationHelper.handleRequestTypeOnMultiplePluralAssociation(
+                this,
+                associationTableName,
+                associationName,
+                associationResources,
+                RequestHelper.REQUEST_TYPE_POST
+            );
+            return responseJSON;
+        } else {
+            let responseJSON = await ResourceAssociationHelper.handleRequestTypeOnPluralAssociation(
+                this,
+                associationTableName,
+                associationName,
+                associationResource,
+                RequestHelper.REQUEST_TYPE_POST
+            );
+            return responseJSON;
+        }
+    }
+
+    // TODO setAssociations, addAssociation, removeAssociation
 
     async getScheme() {
         let tableName = this.getTablename();
@@ -181,6 +207,7 @@ export class NSFWResource {
     async _reloadInstanceRoute(resource){
         let schemes = await NSFWConnector.getSchemes();
         let modelscheme = await this.getScheme();
+        this._metaInformations.modelscheme = modelscheme;
         this._metaInformations.instanceRoute = RouteHelper.getInstanceRouteForResource(schemes, modelscheme, this._metaInformations.tableName, resource);
     }
 
